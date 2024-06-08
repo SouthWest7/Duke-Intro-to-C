@@ -112,26 +112,25 @@ hand_eval_t build_hand_from_match(deck_t * hand,
 
     hand_eval_t ans;
     ans.ranking = what;
-    for (int i = 0; i < n; i++) {
-        ans.cards[i] = hand->cards[idx + i];
+    int prev = 0;
+    if (n == 0) {
+        n++;
+    }
+    for (int i = 0; i < 5; i++) {
+        if (i < n) {
+            ans.cards[i] = hand->cards[idx + i];
+        }
+        else {
+            for (int j = prev; j < hand->n_cards; j++) {
+                if (hand->cards[j]->value != hand->cards[idx]->value) {
+                    ans.cards[i] = hand->cards[j];
+                    prev = j + 1;
+                    break;
+                }
+            }
+        }
     }
 
-    if (idx == 0) {
-        for (int i = n; i < 5; i++) {
-            ans.cards[i] = hand->cards[i];
-        }
-    } else if (idx >= 5 - n) {
-        for (int i = 0; i < 5 - n; i++) {
-            ans.cards[n + i] = hand->cards[i];
-        }
-    } else {
-        for (int i = 0; i < idx; i++) {
-            ans.cards[n + i] = hand->cards[i];
-        }
-        for (int i = idx + n; i < 5; i++) {
-            ans.cards[i] = hand->cards[i];
-        }
-    }
     return ans;
 }
 
